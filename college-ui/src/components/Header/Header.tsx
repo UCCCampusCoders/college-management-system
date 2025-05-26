@@ -18,12 +18,12 @@ const Header = () => {
     }
 
     return (
-        <div className='flex items-center justify-end p-4'>
+        <div className='flex items-center justify-end p-4 border-b shadow-sm'>
             <div className='flex items-center gap-6 justify-end w-full'>
-                <div className='bg-white rounded-full w-7 h-7 flex items-center justify-center cursor-pointer'>
+                <div className='border rounded-full w-7 h-7 flex items-center justify-center cursor-pointer'>
                     <LuMessageSquareQuote className='h-5 w-5' />
                 </div>
-                <div className='bg-white rounded-full w-7 h-7 flex items-center justify-center cursor-pointer relative'>
+                <div className='border rounded-full w-7 h-7 flex items-center justify-center cursor-pointer relative'>
                     <MdOutlineNotifications className='h-6 w-6' />
                     <div className='absolute -top-2 -right-3 w-4 h-4 flex items-center justify-center bg-indigo-600 text-white rounded-full text-xs'>1</div>
                 </div>

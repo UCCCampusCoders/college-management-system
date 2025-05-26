@@ -31,7 +31,7 @@ export default function RootLayout({
                         </Link>
                         <SidebarMenu />
                     </div>
-                    <div className="w-[86%] md:w-[88%] lg:w-[84%] xl:w-[86%] bg-[#F7F8FA] overflow-scroll flex flex-col">
+                    <div className="w-[86%] md:w-[88%] lg:w-[84%] xl:w-[86%] bg-white overflow-scroll flex flex-col">
                         <Header />
                         {children}
                     </div>

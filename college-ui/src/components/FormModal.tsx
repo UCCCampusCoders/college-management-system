@@ -1,5 +1,5 @@
 'use client'
-import { Course } from '@/interfaces/interfaces';
+import { Course, Program } from '@/interfaces/interfaces';
 import dynamic from 'next/dynamic';
 import React, { JSX, useActionState, useEffect, useState } from 'react'
 import Loader from './loader/Loader';
@@ -11,11 +11,13 @@ import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
 import ActionButton from './buttons/ActionButton';
 import { deleteCourse, importCourses } from '@/services/course';
+import { deleteProgram, importPrograms } from '@/services/program';
 
-type FormType = "course"
+type FormType = "course" | "program"
 
 type FormPropsMap = {
     course: Course;
+    program: Program;
 };
 
 type FormModalProps<K extends FormType = FormType> = {
@@ -27,13 +29,19 @@ type FormModalProps<K extends FormType = FormType> = {
 
 const deleteActionMap = {
     course: deleteCourse,
+    program: deleteProgram,
 }
 
 const importActionMap = {
     course: importCourses,
+    program: importPrograms,
 }
 
 const CourseForm = dynamic(() => import("./forms/CourseForm"), {
+    loading: () => <Loader />
+})
+
+const ProgramForm = dynamic(() => import("./forms/ProgramForm"), {
     loading: () => <Loader />
 })
 
@@ -46,8 +54,10 @@ const forms: {
 } = {
     course: (onClose, type, data) => (
         <CourseForm onClose={onClose} type={type} data={data} />
+    ),
+    program: (onClose, type, data) => (
+        <ProgramForm onClose={onClose} type={type} data={data} />
     )
-
 }
 
 const FormModal = <K extends FormType>({ table, type, data, id }: FormModalProps<K>) => {
