@@ -9,19 +9,42 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@heroui/button": "^2.2.19",
+    "@heroui/dropdown": "^2.3.19",
+    "@heroui/form": "^2.1.18",
+    "@heroui/input": "^2.4.19",
+    "@heroui/modal": "^2.2.16",
+    "@heroui/radio": "^2.3.18",
+    "@heroui/select": "^2.4.19",
+    "@heroui/system": "^2.4.15",
+    "@heroui/tabs": "^2.2.16",
+    "@heroui/theme": "^2.4.15",
+    "@heroui/tooltip": "^2.2.16",
+    "@heroui/user": "^2.2.15",
+    "ag-grid-react": "^33.3.0",
+    "axios": "^1.9.0",
+    "framer-motion": "^12.12.1",
+    "js-cookie": "^3.0.5",
+    "jsonwebtoken": "^9.0.2",
+    "jwt-decode": "^4.0.0",
+    "next": "15.1.6",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "next": "15.1.6"
+    "react-hook-form": "^7.56.4",
+    "react-icons": "^5.5.0",
+    "react-toastify": "^11.0.5",
+    "recharts": "^2.15.3"
   },
   "devDependencies": {
-    "typescript": "^5",
+    "@eslint/eslintrc": "^3",
+    "@types/js-cookie": "^3.0.6",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "postcss": "^8",
-    "tailwindcss": "^3.4.1",
     "eslint": "^9",
     "eslint-config-next": "15.1.6",
-    "@eslint/eslintrc": "^3"
+    "postcss": "^8",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5"
   }
 }

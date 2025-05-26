@@ -1,6 +1,7 @@
 from contextlib import asynccontextmanager
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, Response
+from college.core.config import config
 from college.db.database import get_db
 from college.routes import auth, batch, course, faculty, program, student, user
 from college.utils.request_logging_middleware import RequestLoggingMiddleware
@@ -26,9 +27,12 @@ app = FastAPI(
 async def options_handler(path_str):
     return Response()
 
+if config.APP_URL is None:
+    raise ValueError("APP_URL must not be None")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=[config.APP_URL],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

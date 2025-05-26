@@ -6,7 +6,8 @@ load_dotenv()
 class BaseConfig:
     def __init__(self):
         # APP CONFIGURATION
-        self.APP_NAME = os.getenv("APP_NAME", "ams")
+        self.APP_NAME = os.getenv("APP_NAME", "college")
+        self.APP_URL = os.getenv("APP_URL")
         
         self.SECRET_KEY = os.getenv("SECRET_KEY")
         self.ALGORITHM = os.getenv("ALGORITHM", "HS256")

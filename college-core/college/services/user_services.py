@@ -81,7 +81,8 @@ class UserMgr:
                 "middle_name": user.get("middle_name", ""),
                 "last_name": user.get("last_name", ""),
                 "email": user["email"],
-                "role": user["role"]
+                "role": user["role"],
+                "status": user["status"]
             }
             role = user["role"]
 
