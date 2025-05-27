@@ -83,6 +83,7 @@ async def get_faculty_by_user_id(user_id: str, faculty_mgr: FacultyMgr = Depends
     except Exception as e:
         raise (e)
 
+
 @router.patch("/{faculty_id}/")
 async def update_faculty(faculty_id: str, faculty: FacultyUpdate, faculty_mgr: FacultyMgr = Depends(get_faculty_mgr)):
     try:
@@ -98,3 +99,12 @@ async def update_faculty(faculty_id: str, faculty: FacultyUpdate, faculty_mgr: F
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error updating Faculty: {str(e)}"
         )
+
+
+@router.get("/program/{program_id}/")
+async def get_faculties_by_program(program_id: str, faculty_mgr: FacultyMgr = Depends(get_faculty_mgr)):
+    try:
+        faculty_data = await faculty_mgr.get_faculties_by_program_id(program_id)
+        return faculty_data
+    except Exception as e:
+        raise (e)

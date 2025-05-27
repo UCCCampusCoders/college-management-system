@@ -1,43 +1,76 @@
 'use client'
-import { Course, Program } from '@/interfaces/interfaces'
+import { Batch, Faculty, Program } from '@/interfaces/interfaces'
+import { getProgramsByStatus } from '@/services/program'
 import { useRouter } from 'next/navigation'
 import React, { startTransition, useActionState, useEffect, useState } from 'react'
-import { toast } from 'react-toastify'
-import { Form } from "@heroui/form"
-import { Input } from '@heroui/input'
-import { Select, SelectItem } from "@heroui/select"
 import { Controller, useForm } from 'react-hook-form'
-import { Radio, RadioGroup } from "@heroui/radio"
-import GeneralButton from '../buttons/GeneralButton'
+import { toast } from 'react-toastify'
 import Loader from '../loader/Loader'
-import { createCourse, updateCourse } from '@/services/course'
-import { getProgramsByStatus } from '@/services/program'
+import { Form } from '@heroui/form'
+import { Input } from '@heroui/input'
+import { Select, SelectItem } from '@heroui/select'
+import { getFullName } from '@/utilities/utils'
+import { Radio, RadioGroup } from '@heroui/radio'
+import GeneralButton from '../buttons/GeneralButton'
+import { getFacultiesByProgram } from '@/services/faculty'
+import { createBatch, updateBatch } from '@/services/batch'
 
-
-const CourseForm = ({
+const BatchForm = ({
     onClose,
     type,
     data,
 }: {
     onClose: () => void,
     type: "create" | "update",
-    data?: Course,
+    data?: Batch,
 }) => {
 
-    const [initialLoading, setInitialLoading] = useState<boolean>(true)
     const [isLoading, setIsLoading] = useState<boolean>(false)
-    const { register, handleSubmit, reset, control } = useForm<Course>({
-        defaultValues: {
-            program_id: data?.program_id,
-            course_code: data?.course_code,
-            course_name: data?.course_name,
-            semester: data?.semester,
-            status: data?.status
-        },
-    })
+    const [initialLoading, setInitialLoading] = useState<boolean>(true)
     const [programs, setPrograms] = useState<Program[]>([])
+    const [faculties, setFaculties] = useState<Faculty[]>([])
+    const { register, handleSubmit, reset, control} = useForm<Batch>({
+        defaultValues: {
+            batch_name: data?.batch_name,
+            semester: data?.semester,
+            program_id: data?.program_id,
+            faculty_in_charge: data?.faculty_in_charge,
+            start_date: data?.start_date,
+            end_date: data?.end_date,
+            status: data?.status
+        }
+    })
+    const [selectedProgram, setSelectedProgram] = useState<string>()
+
+
+    useEffect(() => {
+        const loadData = async () => {
+            const [programsRes, defaultRes] = await Promise.all([
+                getProgramsByStatus("Active"),
+                data
+            ]);
+            setPrograms(programsRes);
+            if (defaultRes?.program_id) {
+                const facultyRes = await getFacultiesByProgram(defaultRes.program_id);
+                setFaculties(facultyRes);
+            }
+            setInitialLoading(false);
+        };
+        loadData();
+    }, [data]);
+
+    useEffect(() => {
+        const fetchFaculties = async () => {
+            const faculty_data = await getFacultiesByProgram(selectedProgram!)
+            setFaculties(faculty_data)
+        }
+        if (selectedProgram) {
+            fetchFaculties()
+        }
+    }, [selectedProgram])
+
     const [state, formAction] = useActionState(
-        type === "create" ? createCourse : updateCourse,
+        type === "create" ? createBatch : updateBatch,
         {
             success: false,
             error: false,
@@ -45,18 +78,6 @@ const CourseForm = ({
         }
     );
     const router = useRouter()
-
-    useEffect(() => {
-        const loadData = async () => {
-            const [programsRes] = await Promise.all([
-                getProgramsByStatus("Active"),
-            ]);
-            setPrograms(programsRes);
-            setInitialLoading(false);
-        };
-        loadData();
-    }, []);
-
 
     const onSubmit = handleSubmit((data) => {
         setIsLoading(true)
@@ -79,6 +100,7 @@ const CourseForm = ({
     if (initialLoading) {
         return <Loader />
     }
+
     return (
         <Form onSubmit={onSubmit} onReset={() => reset()}>
             <div className="flex flex-col w-full gap-4">
@@ -91,27 +113,19 @@ const CourseForm = ({
                     />
                 )}
                 <Input
-                    {...register("course_code")}
-                    label="Course Code"
+                    {...register("batch_name")}
+                    label="Batch Name"
                     variant="bordered"
                     type='text'
-                    placeholder='MCA-CT1'
-                    isRequired
-                />
-                <Input
-                    {...register("course_name")}
-                    label="Course Name"
-                    placeholder='Science'
-                    variant="bordered"
+                    placeholder='2023-MCA-A'
                     isRequired
                 />
                 <Input
                     {...register("semester")}
                     label="Semester"
                     variant="bordered"
-                    placeholder='1'
                     type='number'
-                    isRequired
+                    placeholder='1'
                 />
                 <Controller
                     name="program_id"
@@ -122,7 +136,10 @@ const CourseForm = ({
                             label='Select Program'
                             variant='bordered'
                             selectedKeys={field.value ? [field.value] : []}
-                            isRequired
+                            onChange={(e) => {
+                                field.onChange(e);
+                                setSelectedProgram(e.target.value);
+                            }}
                         >
                             {programs.map((program) => (
                                 <SelectItem key={program._id}>
@@ -131,6 +148,41 @@ const CourseForm = ({
                             ))}
                         </Select>
                     )}
+                />
+                <Controller
+                    name="faculty_in_charge"
+                    control={control}
+                    render={({ field }) => (
+                        <Select
+                            {...field}
+                            label="Select Faculty"
+                            variant="bordered"
+                            selectedKeys={field.value ? [field.value] : []}
+                            onChange={(e) => {
+                                field.onChange(e.target.value);
+                            }}
+                            isDisabled={!faculties.length}
+                        >
+                            {faculties.map((faculty) => (
+                                <SelectItem key={faculty.user_id}>
+                                    {getFullName(faculty.first_name, faculty.middle_name || "", faculty.last_name || "")}
+                                </SelectItem>
+                            ))}
+                        </Select>
+                    )}
+                />
+
+                <Input
+                    type='date'
+                    {...register("start_date")}
+                    label="Start Date"
+                    variant="bordered"
+                />
+                <Input
+                    type='date'
+                    {...register("end_date")}
+                    label="End Date"
+                    variant="bordered"
                 />
 
                 {data && (
@@ -143,7 +195,7 @@ const CourseForm = ({
                                 orientation="horizontal"
                                 {...field}
                             >
-                                <Radio value="Active" id="active" >Active</Radio>
+                                <Radio value="Active" id="active">Active</Radio>
                                 <Radio value="Inactive" id="inactive">Inactive</Radio>
                             </RadioGroup>
                         )}
@@ -163,4 +215,4 @@ const CourseForm = ({
     )
 }
 
-export default CourseForm
+export default BatchForm

@@ -1,5 +1,5 @@
 'use client'
-import { Course, Program } from '@/interfaces/interfaces';
+import { Batch, Course, Faculty, Program } from '@/interfaces/interfaces';
 import dynamic from 'next/dynamic';
 import React, { JSX, useActionState, useEffect, useState } from 'react'
 import Loader from './loader/Loader';
@@ -12,12 +12,16 @@ import { useRouter } from 'next/navigation';
 import ActionButton from './buttons/ActionButton';
 import { deleteCourse, importCourses } from '@/services/course';
 import { deleteProgram, importPrograms } from '@/services/program';
+import { deleteBatch, importBatches } from '@/services/batch';
+import { importFaculties } from '@/services/faculty';
 
-type FormType = "course" | "program"
+type FormType = "course" | "program" | "batch" |"faculty"
 
 type FormPropsMap = {
     course: Course;
     program: Program;
+    batch: Batch;
+    faculty: Faculty
 };
 
 type FormModalProps<K extends FormType = FormType> = {
@@ -30,11 +34,15 @@ type FormModalProps<K extends FormType = FormType> = {
 const deleteActionMap = {
     course: deleteCourse,
     program: deleteProgram,
+    batch: deleteBatch,
+    faculty: deleteBatch
 }
 
 const importActionMap = {
     course: importCourses,
     program: importPrograms,
+    batch: importBatches,
+    faculty: importFaculties
 }
 
 const CourseForm = dynamic(() => import("./forms/CourseForm"), {
@@ -42,6 +50,14 @@ const CourseForm = dynamic(() => import("./forms/CourseForm"), {
 })
 
 const ProgramForm = dynamic(() => import("./forms/ProgramForm"), {
+    loading: () => <Loader />
+})
+
+const BatchForm = dynamic(() => import("./forms/BatchForm"), {
+    loading: () => <Loader />
+})
+
+const FacultyForm = dynamic(() => import("./forms/FacultyForm"), {
     loading: () => <Loader />
 })
 
@@ -57,6 +73,12 @@ const forms: {
     ),
     program: (onClose, type, data) => (
         <ProgramForm onClose={onClose} type={type} data={data} />
+    ),
+    batch: (onClose, type, data) => (
+        <BatchForm onClose={onClose} type={type} data={data} />
+    ),
+    faculty: (onClose, type, data) => (
+        <FacultyForm onClose={onClose} type={type} data={data} />
     )
 }
 

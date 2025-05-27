@@ -21,6 +21,7 @@
     "@heroui/theme": "^2.4.15",
     "@heroui/tooltip": "^2.2.16",
     "@heroui/user": "^2.2.15",
+    "@react-types/shared": "^3.29.1",
     "ag-grid-react": "^33.3.0",
     "axios": "^1.9.0",
     "framer-motion": "^12.12.1",

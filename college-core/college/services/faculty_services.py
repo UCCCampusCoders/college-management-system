@@ -193,4 +193,18 @@ class FacultyMgr:
             app_logger.error(str(e))
             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                                 detail=f"Error updating student: {str(e)}")
+    
+    async def get_faculties_by_program_id(self, program_id: str):
+        try:
+            faculty_data = await self.faculty_collection.find({
+                "program_id": program_id
+            }).to_list(length=None)
+
+            for faculty in faculty_data:
+                faculty["_id"] = str(faculty["_id"])
+
+            return faculty_data
+        except Exception as e:
+            raise HTTPException(
+                status_code=500, detail=f"Error fetching faculties, {str(e)}")
             

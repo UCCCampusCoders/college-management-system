@@ -10,6 +10,25 @@ export interface User {
     updated_at?: string | null
 }
 
+export interface Faculty {
+    _id?: string
+    user_id?: string
+    first_name: string
+    middle_name?: string
+    last_name?: string
+    email: string
+    phone_no: string
+    gender?: "Male" | "Female" | "Others" | null
+    dob?: string | null
+    program_id: string
+    join_date?: string | null
+    end_date?: string | null
+    status: "Active" | "Resigned"
+    created_at?: string | null
+    updated_at?: string | null
+    program?: Program
+}
+
 export interface Course {
     _id?: string
     course_code: string
@@ -39,4 +58,19 @@ export interface AssignCourse {
     batch_id?: string | null
     faculty_id: string
     assigned_date?: string | null
+}
+
+export interface Batch {
+    _id?: string
+    batch_name: string
+    faculty_in_charge?: string
+    semester?: number
+    program_id?: string
+    start_date?: string | null
+    status: "Active" | "Inactive" | "Deleted"
+    end_date?: string | null
+    created_at?: string | null
+    updated_at?: string | null
+    program?: Program
+    faculty?: Faculty
 }
